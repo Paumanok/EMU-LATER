@@ -18,10 +18,7 @@ struct MOS6502{
     uint8_t  *P;   //status register
     }MOS6502;
 
-//status flags to be used with status register P
-#define BRK_FLAG (0x10) 
-#define OVERFLOW_FLAG (0X40)
-#define NEGATIVE_FLAG (0x80)
+//status flags for the status register(p)
 #define CARRY_FLAG (0x1)
 #define ZERO_FLAG (0X2)
 #define IRQ_DISABLE_FLAG (0x4) //1=disabled
