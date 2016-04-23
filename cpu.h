@@ -5,12 +5,27 @@
  * Date 4-23-16
  * *********************************************/
 
-struct cpu{
+ /***************
+  * a data structure used to keep track of 
+  * the registers used by the cpu
+  **************/
+struct MOS6502{
     uint16_t *pc;  //program counter
     uint8_t  *A;   //Accumulator register
     uint8_t  *Y;   //Index register Y
     uint8_t  *X;   //Index register X
     uint8_t  *S;   //stack pointer
-    
+    uint8_t  *P;   //status register
     }MOS6502;
 
+//status flags to be used with status register P
+#define BRK_FLAG (0x10) 
+#define OVERFLOW_FLAG (0X40)
+#define NEGATIVE_FLAG (0x80)
+#define CARRY_FLAG (0x1)
+#define ZERO_FLAG (0X2)
+#define IRQ_DISABLE_FLAG (0x4) //1=disabled
+#define DECIMAL_FLAG (0x8) //disabled on actual nes 6502
+#define BRK_FLAG (0x10) 
+#define OVERFLOW_FLAG (0X40)
+#define NEGATIVE_FLAG (0x80)
