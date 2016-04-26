@@ -25,6 +25,7 @@ int initCPU(MOS6502 *cpu ){
     cpu->Y  = malloc(sizeof(uint8_t));
     cpu->X  = malloc(sizeof(uint8_t));
     cpu->S  = malloc(sizeof(uint8_t));
+    cpu->P  = malloc(sizeof(uint8_t));
 
    return 1; //should add malloc checks to avoid segfaults 
 }
@@ -37,6 +38,7 @@ void reset(MOS6502 *cpu){
     cpu->Y  = 0x0;
     cpu->X  = 0x0;
     cpu->S  = 0x0;
+    cpu->P  = 0x0;
 }
 
 

@@ -26,3 +26,9 @@ struct MOS6502{
 #define BRK_FLAG (0x10) 
 #define OVERFLOW_FLAG (0X40)
 #define NEGATIVE_FLAG (0x80)
+
+//bitwise logic functions
+inline void AND_byte(uint8_t *a, uint8_t *b){ *a = *a & *b;}
+inline void OR_byte(uint8_t *a, uint8_t *b){ *a = *a | *b;}
+inline void XOR_byte(uint8_t *a, uint8_t *b){ *a = *a ^ *b;}
+
