@@ -42,3 +42,34 @@ void reset(MOS6502 *cpu){
 }
 
 
+
+//bitwise logic functions
+//for most of these, it's safe to assume the register where
+//the result is stored, is the accumulator.
+//////////////////
+//AND two registers
+//uint8_t *a: result var, should be the accumulator
+//uint8_t *b: second register to be passed in.
+//uint8_t *s: pointer to status register
+inline void AND_byte(uint8_t *a, uint8_t *b, uint8_t *s){
+    *a = *a & *b;
+    if(*a == 0){
+        //set zero flag for status reg
+        *s = *s ^ ZERO_FLAG;
+    }
+}
+
+inline void OR_byte(uint8_t *a, uint8_t *b, uint8_t *s){
+   *a = *a | *b;
+   if(*a == 0){
+       *s = *s ^ ZERO_FLAG;
+   }
+}
+
+inline void XOR_byte(uint8_t *a, uint8_t *b, uint8_t *s){
+    *a = *a ^ *b;
+    if(*a == 0){
+        *s = *s ^ ZERO_FLAG;
+    }
+}
+
