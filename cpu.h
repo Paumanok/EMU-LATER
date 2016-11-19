@@ -6,7 +6,7 @@
  * *********************************************/
 
  /***************
-  * a data structure used to keep track of 
+  * a data structure used to keep track of
   * the registers used by the cpu
   **************/
 struct MOS6502{
@@ -23,7 +23,7 @@ struct MOS6502{
 #define ZERO_FLAG (0X2)
 #define IRQ_DISABLE_FLAG (0x4) //1=disabled
 #define DECIMAL_FLAG (0x8) //disabled on actual nes 6502
-#define BRK_FLAG (0x10) 
+#define BRK_FLAG (0x10)
 #define OVERFLOW_FLAG (0X40)
 #define NEGATIVE_FLAG (0x80)
 
@@ -31,4 +31,3 @@ struct MOS6502{
 inline void AND_byte(uint8_t *a, uint8_t *b, uint8_t *s);
 inline void OR_byte(uint8_t *a, uint8_t *b, uint8_t * s);
 inline void XOR_byte(uint8_t *a, uint8_t *b, uint8_t *s);
-
