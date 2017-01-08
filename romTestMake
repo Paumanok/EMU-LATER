@@ -1,0 +1,25 @@
+#----------------------------------
+# Makefile for EMU-LATER emulator project: rom load testing
+# Tested under:
+#
+# author: Matthew Smith mrs9107@g.rit.edu
+#----------------------------------
+
+## for GCC
+CC=c99
+CFLAGS= -Wall -pedantic
+
+#files
+SOURCE= romtest.c rom.c rom.h
+PROG= romTest
+	
+
+all: clean $(PROG)
+
+#build romTest
+$(PROG): $(SOURCE)
+	$(CC) $(CFLAGS) $(SOURCE) -o $(PROG)
+
+clean:
+	rm $(PROG)
+	echo Clean done
