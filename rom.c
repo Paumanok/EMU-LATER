@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
+#include <stdlib.h>
 #include "rom.h"
 
 int debug = 1;
@@ -17,16 +18,50 @@ int debug = 1;
 */
 int getRom(const char* rom){
     int returnState = 1;
-    FILE *fp;   
+    FILE *fp;
     Header romHeader;
-    
+    ROM cart;
+
     fp = fopen(rom, "rb");
     if(NULL == fp) return -1; //check file loaded
     fread(&romHeader, 1, sizeof(Header), fp); //read header
 
-    //check for 'NES1A' in header to confirm .nes file   
-    if(memcmp(romHeader.NES, "NES\x1A", sizeof(romHeader.NES))) return -1;
-    if(debug)  printf("Header:%s\n reading...\n ", romHeader.NES);
+    //check for 'NES1A' in header to confirm .nes file
+    if(memcmp(romHeader.NES, "NES\x1A", sizeof(romHeader.NES))){
+      if(debug) printf("Header incorrect, exiting");
+      return -1;
+    }
+
+    if(debug)  printf("Header:%s\n\rreading...\n\r \
+    PRG rom size: %d bytes\n \
+    CHR rom size: %d bytes\n ", \
+    romHeader.NES, romHeader.PRG_ROM_SIZE*PRG_ROM_MULT, romHeader.CHR_ROM_SIZE*CHR_ROM_MULT);
+
+
+    if(!cartInit(&cart, &romHeader)){
+      if(debug) printf("Unable to creat virtual cart, exiting");
+      return -1;
+    }
+
 
     return returnState;
+}
+
+//initialize cart data structure
+int cartInit(ROM *rom, Header *header){
+    int playChoiceINST_ROM, playChoicePROM;
+
+    //replace with real checks
+    playChoicePROM = 1;
+    playChoiceINST_ROM = 1;
+
+    rom->trainer = calloc(TRAINER_SIZE, sizeof(uint8_t));
+    if(debug) printf("trainer initialized\n\r");
+    rom->PRG_ROM = calloc(header->PRG_ROM_SIZE * PRG_ROM_MULT, sizeof(uint8_t));
+    rom->CHR_ROM = calloc(header->CHR_ROM_SIZE * CHR_ROM_MULT, sizeof(uint8_t));
+    if(playChoiceINST_ROM) rom->INST_ROM = calloc(INST_ROM_SIZE, sizeof(uint8_t) );
+    if(playChoicePROM) rom->PROM = calloc( PROM_SIZE, sizeof(uint8_t));
+
+
+    return 1;//bad news bears,need even more real checks
 }
