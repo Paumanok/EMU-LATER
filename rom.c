@@ -49,13 +49,14 @@ int getRom(const char* rom){
 
 //initialize cart data structure
 int cartInit(ROM *rom, Header *header){
-    int playChoiceINST_ROM, playChoicePROM;
+    int playChoiceINST_ROM, playChoicePROM, trainerExists;
 
-    //replace with real checks
-    playChoicePROM = 1;
-    playChoiceINST_ROM = 1;
+    trainerExists = ((header->Flag_Six && 4) >> 3) ? 1 : 0;
+    //implement these later if need be
+    playChoicePROM = 0;
+    playChoiceINST_ROM = 0;
 
-    rom->trainer = calloc(TRAINER_SIZE, sizeof(uint8_t));
+    if(trainerExists) rom->trainer = calloc(TRAINER_SIZE, sizeof(uint8_t));
     if(debug) printf("trainer initialized\n\r");
     rom->PRG_ROM = calloc(header->PRG_ROM_SIZE * PRG_ROM_MULT, sizeof(uint8_t));
     rom->CHR_ROM = calloc(header->CHR_ROM_SIZE * CHR_ROM_MULT, sizeof(uint8_t));

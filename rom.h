@@ -34,6 +34,7 @@ typedef struct{
     uint8_t *CHR_ROM;
     uint8_t *INST_ROM;
     uint8_t *PROM;
+    uint8_t *PRG_RAM;
 }ROM;
 
 int getRom(const char* rom);
