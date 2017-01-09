@@ -21,14 +21,12 @@ int getRom(const char* rom){
     Header romHeader;
     
     fp = fopen(rom, "rb");
-
     if(NULL == fp) return -1; //check file loaded
-    
     fread(&romHeader, 1, sizeof(Header), fp); //read header
-        
-    if(memcmp(romHeader.NES, "NES\x1A", sizeof(romHeader.NES))) return -1; //check for 'NES1A' in header to confirm .nes file
-            
-    if(debug)  printf("%s\n", romHeader.NES);
+
+    //check for 'NES1A' in header to confirm .nes file   
+    if(memcmp(romHeader.NES, "NES\x1A", sizeof(romHeader.NES))) return -1;
+    if(debug)  printf("Header:%s\n reading...\n ", romHeader.NES);
 
     return returnState;
 }

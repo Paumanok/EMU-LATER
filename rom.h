@@ -20,6 +20,15 @@ typedef struct{
     uint8_t Reserved[7];  //should be all 0s
 }Header;
 
+typedef struct{
+    Header header;
+    uint8_t *trainer;
+    uint8_t *PRG_ROM;
+    uint8_t *CHR_ROM;
+    uint8_t *INST_ROM;
+    uint8_t *PRG_RAM;
+}ROM;
+
 int getRom(const char* rom);
 
 #endif //ROM_H__
