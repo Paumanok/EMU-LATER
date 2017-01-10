@@ -43,6 +43,17 @@ int getRom(const char* rom){
       return -1;
     }
 
+    if((romHeader.Flag_Six && 4) >> 3){
+     fread(cart.trainer, 1, TRAINER_SIZE, fp);
+    }
+
+    fread(cart.PRG_ROM, 1, romHeader.PRG_ROM_SIZE * PRG_ROM_MULT, fp);
+
+    fread(cart.CHR_ROM, 1, romHeader.CHR_ROM_SIZE * CHR_ROM_MULT, fp);
+    
+    if(debug) printf("some data %d\n\r", cart.PRG_ROM[5]);
+
+
 
     return returnState;
 }
