@@ -37,7 +37,7 @@ typedef struct{
     uint8_t *PRG_RAM;
 }ROM;
 
-int getRom(const char* rom);
+int getRom(const char* rom, ROM *cart);
 
 int cartInit(ROM *rom, Header *header);
 

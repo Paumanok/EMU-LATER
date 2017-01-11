@@ -16,11 +16,11 @@ int debug = 1;
 * main function for rom capture and parsing
 * given file name and rom struct, fills rom struct with needed data
 */
-int getRom(const char* rom){
+int getRom(const char* rom, ROM *cart){
     int returnState = 1;
     FILE *fp;
     Header romHeader;
-    ROM cart;
+
 
     fp = fopen(rom, "rb");
     if(NULL == fp) return -1; //check file loaded
@@ -38,23 +38,28 @@ int getRom(const char* rom){
     romHeader.NES, romHeader.PRG_ROM_SIZE*PRG_ROM_MULT, romHeader.CHR_ROM_SIZE*CHR_ROM_MULT);
 
 
-    if(!cartInit(&cart, &romHeader)){
+    if(!cartInit(cart, &romHeader)){
       if(debug) printf("Unable to creat virtual cart, exiting");
       return -1;
     }
 
     if((romHeader.Flag_Six && 4) >> 3){
-     fread(cart.trainer, 1, TRAINER_SIZE, fp);
+     fread(cart->trainer, 1, TRAINER_SIZE, fp);
     }
 
-    fread(cart.PRG_ROM, 1, romHeader.PRG_ROM_SIZE * PRG_ROM_MULT, fp);
+    fread(cart->PRG_ROM, 1, romHeader.PRG_ROM_SIZE * PRG_ROM_MULT, fp);
 
-    fread(cart.CHR_ROM, 1, romHeader.CHR_ROM_SIZE * CHR_ROM_MULT, fp);
-    
-    if(debug) printf("some data %d\n\r", cart.PRG_ROM[5]);
+    fread(cart->CHR_ROM, 1, romHeader.CHR_ROM_SIZE * CHR_ROM_MULT, fp);
 
+    if(debug) {
+        printf("some data:\n\r");
+      for(int i=0; i<50; i=i+2){
+        printf("%02x %02x\n\r", cart->PRG_ROM[i],cart->PRG_ROM[i+1]);
+      }
 
+    }
 
+    fclose(fp);
     return returnState;
 }
 
