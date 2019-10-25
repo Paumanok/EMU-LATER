@@ -72,12 +72,21 @@ int cartInit(ROM *rom, Header *header){
     playChoicePROM = 0;
     playChoiceINST_ROM = 0;
 
-    if(trainerExists) rom->trainer = calloc(TRAINER_SIZE, sizeof(uint8_t));
-    if(debug) printf("trainer initialized\n\r");
+    if(trainerExists)
+        rom->trainer = calloc(TRAINER_SIZE, sizeof(uint8_t));
+    
+    if(debug) 
+        printf("trainer initialized\n\r");
+    
     rom->PRG_ROM = calloc(header->PRG_ROM_SIZE * PRG_ROM_MULT, sizeof(uint8_t));
+    
     rom->CHR_ROM = calloc(header->CHR_ROM_SIZE * CHR_ROM_MULT, sizeof(uint8_t));
-    if(playChoiceINST_ROM) rom->INST_ROM = calloc(INST_ROM_SIZE, sizeof(uint8_t) );
-    if(playChoicePROM) rom->PROM = calloc( PROM_SIZE, sizeof(uint8_t));
+    
+    if(playChoiceINST_ROM) 
+        rom->INST_ROM = calloc(INST_ROM_SIZE, sizeof(uint8_t) );
+    
+    if(playChoicePROM)
+        rom->PROM = calloc( PROM_SIZE, sizeof(uint8_t));
 
 
     return 1;//bad news bears,need even more real checks
