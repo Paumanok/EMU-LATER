@@ -10,6 +10,7 @@ int main(int argc, char* argv[]);
 int main(int argc, char* argv[]){
     ROM *cart;
     cart = malloc(sizeof(ROM));
+    
     if(argc > 1){
        if(getRom(argv[1], cart) > 0){
             printf("load sucessful\n\r");

@@ -52,11 +52,28 @@ int getRom(const char* rom, ROM *cart){
     fread(cart->CHR_ROM, 1, romHeader.CHR_ROM_SIZE * CHR_ROM_MULT, fp);
 
     if(debug) {
-        printf("some data:\n\r");
-      for(int i=0; i<50; i=i+2){
-        printf("%02x %02x\n\r", cart->PRG_ROM[i],cart->PRG_ROM[i+1]);
+      //  printf("some data:\n\r");
+      //for(int i=0; i<50; i=i+2){
+      //  printf("%02x %02x\n\r", cart->PRG_ROM[i],cart->PRG_ROM[i+1]);
+      //}
+     
+      int jumps = 0;
+      int loada = 0;
+      printf("finding absolute jump instructions...\n\r");
+      for(int i = 0; i < romHeader.PRG_ROM_SIZE*PRG_ROM_MULT; i++){
+        if(cart->PRG_ROM[i] == 0x4c){
+            printf("jmp absolute: jmp $%x%x\n", cart->PRG_ROM[i+2], cart->PRG_ROM[i+1]);
+            printf("-----instruction at jump: %02x\n\r", 
+                    cart->PRG_ROM[((cart->PRG_ROM[i+2] << 1) | cart->PRG_ROM[i+1])]);
+            jumps++;
+        }
+        if(cart->PRG_ROM[i] == 0xa1){
+            printf("load acc indexed indirect: LDA (%02x, X)\n", cart-> PRG_ROM[i+1]);
+            loada++;
+        }  
       }
-
+      printf(" total number of jump instructions: %d\n", jumps);
+      printf(" total number of load instructions: %d\n", loada);
     }
 
     fclose(fp);
@@ -64,6 +81,7 @@ int getRom(const char* rom, ROM *cart){
 }
 
 //initialize cart data structure
+//this needs to be filled with error checking
 int cartInit(ROM *rom, Header *header){
     int playChoiceINST_ROM, playChoicePROM, trainerExists;
 
@@ -71,6 +89,10 @@ int cartInit(ROM *rom, Header *header){
     //implement these later if need be
     playChoicePROM = 0;
     playChoiceINST_ROM = 0;
+    
+    //retain header info
+    rom->header = malloc(sizeof(Header));
+    memcpy(rom->header, header, sizeof(Header));
 
     if(trainerExists)
         rom->trainer = calloc(TRAINER_SIZE, sizeof(uint8_t));

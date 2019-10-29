@@ -32,19 +32,19 @@ typedef struct MOS6502{
 
 //addressing modes
 //non-indexed
-inline uint16_t acc(MOS6502* cpu); //accumulator
-inline uint16_t imm(MOS6502* cpu); //immediate
-inline uint16_t imp(MOS6502* cpu); //implied
-inline uint16_t rel(MOS6502* cpu); //relative
-inline uint16_t abt(MOS6502* cpu); //absolute
-inline uint16_t zpg(MOS6502* cpu); //zero-page
-inline uint16_t ind(MOS6502* cpu); //indirect
+inline uint8_t acc(MOS6502 *cpu); //accumulator
+inline uint8_t imm(MOS6502 *cpu); //immediate
+inline uint8_t imp(MOS6502 *cpu); //implied
+inline uint8_t rel(MOS6502 *cpu); //relative
+inline uint8_t abt(MOS6502 *cpu); //absolute
+inline uint8_t zpg(MOS6502 *cpu); //zero-page
+inline uint8_t ind(MOS6502 *cpu); //indirect
 
 //indexed
-inline uint16_t abt_in(); //absolute indexed
-inline uint16_t zpg_in(); //zero-page indexed
-inline uint16_t ind_in(); //indirect indexed
-inline uint16_t in_ind(); //indexed indirect
+inline uint8_t abt_in(MOS6502 *cpu); //absolute indexed
+inline uint8_t zpg_in(MOS6502 *cpu); //zero-page indexed
+inline uint8_t ind_in(MOS6502 *cpu); //indirect indexed
+inline uint8_t in_ind(MOS6502 *cpu); //indexed indirect
 
 //bitwise logic functions
 inline void AND_byte(uint8_t *a, uint8_t *b, uint8_t *s);

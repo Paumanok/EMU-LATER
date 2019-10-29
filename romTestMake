@@ -7,7 +7,7 @@
 
 ## for GCC
 CC=c99
-CFLAGS= -Wall -pedantic
+CFLAGS= -g -Wall -pedantic
 
 #files
 SOURCE= romtest.c rom.c rom.h
@@ -15,6 +15,8 @@ PROG= romTest
 	
 
 all: clean $(PROG)
+
+build: $(PROG)
 
 #build romTest
 $(PROG): $(SOURCE)

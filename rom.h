@@ -28,7 +28,7 @@ typedef struct{
 }Header;
 
 typedef struct{
-    //Header header;
+    struct Header* header;
     uint8_t *trainer;
     uint8_t *PRG_ROM;
     uint8_t *CHR_ROM;
