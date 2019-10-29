@@ -8,6 +8,7 @@
 *****************/
 
 #include <stdint.h>
+#include "common.h"
 
 //sizes in bytes
 #define PRG_ROM_MULT 163854
@@ -28,7 +29,7 @@ typedef struct{
 }Header;
 
 typedef struct{
-    struct Header* header;
+    Header* header;
     uint8_t *trainer;
     uint8_t *PRG_ROM;
     uint8_t *CHR_ROM;
