@@ -38,8 +38,8 @@ typedef struct{
     uint8_t *PRG_RAM;
 }ROM;
 
-int getRom(const char* rom, ROM *cart);
+int init_rom(const char* rom, ROM *cart);
 
-int cartInit(ROM *rom, Header *header);
+int cart_init(ROM *rom, Header *header);
 
 #endif //ROM_H__

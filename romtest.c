@@ -12,7 +12,7 @@ int main(int argc, char* argv[]){
     cart = malloc(sizeof(ROM));
     
     if(argc > 1){
-       if(getRom(argv[1], cart) > 0){
+       if(init_rom(argv[1], cart) > 0){
             printf("load sucessful\n\r"); 
             //some basic instruction parsing to visually validate
             int jumps = 0;

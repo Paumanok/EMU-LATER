@@ -16,7 +16,7 @@ int debug = 1;
 * main function for rom capture and parsing
 * given file name and rom struct, fills rom struct with needed data
 */
-int getRom(const char* rom, ROM *cart){
+int init_rom(const char* rom, ROM *cart){
     int returnState = 1;
     FILE *fp;
     Header romHeader;
@@ -36,7 +36,7 @@ int getRom(const char* rom, ROM *cart){
     CHR rom size: %d bytes\n ", \
     romHeader.NES, romHeader.PRG_ROM_SIZE*PRG_ROM_MULT, romHeader.CHR_ROM_SIZE*CHR_ROM_MULT);
 
-    if(!cartInit(cart, &romHeader)){
+    if(!cart_init(cart, &romHeader)){
       if(debug) printf("Unable to create virtual cart, exiting");
       return -1;
     }
@@ -55,7 +55,7 @@ int getRom(const char* rom, ROM *cart){
 
 //initialize cart data structure
 //this needs to be filled with error checking
-int cartInit(ROM *rom, Header *header){
+int cart_init(ROM *rom, Header *header){
     int playChoiceINST_ROM, playChoicePROM, trainerExists;
 
     trainerExists = ((header->Flag_Six && 4) >> 3) ? 1 : 0;

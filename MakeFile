@@ -11,15 +11,11 @@ CFLAGS = Wall -c99
 DFLAGS = -g
 
 #build whole project
-emu-later: main.c
-    $(CC) $(CFLAGS) $(DFLAGS)  -o emu-later main.c cpu.o ppu.o
+emu-later: core.c
+    $(CC) $(CFLAGS) $(DFLAGS) -o emu-later core.c core.h cpu.o 
 
-cpu.o:  cpu.c cpu.h
+cpu.o:  cpu.c cpu.h common.h
     $(CC) $(CFLAGS) $(DFLAGS) -c cpu.c
 
-ppu.o: ppu.c ppu.h
-    $(CC) $(CFLAGS) $(DFLAGS) -c ppu.c
-
-
-
-
+rom.o: rom.c rom.h common.h
+    $(CC) $(CFLAGS) $(DFLAGS) -c rom.c

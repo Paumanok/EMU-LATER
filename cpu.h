@@ -1,13 +1,26 @@
+#ifndef CPU_H__
+#define CPU_H__
 /**********************************************
  * NES EMU-LATOR cpu header file
  *Author: Matthew Smith mrs9107@g.rit.edu
  *
- * Date 4-23-16
+ * Date: 
  * *********************************************/
 
 #include <stdint.h> 
 #include <stdio.h>
 #include <stdlib.h>
+#include "common.h"
+
+//status flags for the status register(p)
+#define CARRY_FLAG (0x1)
+#define ZERO_FLAG (0X2)
+#define IRQ_DISABLE_FLAG (0x4) //1=disabled
+#define DECIMAL_FLAG (0x8) //disabled on actual nes 6502
+#define BRK_FLAG (0x10)
+#define OVERFLOW_FLAG (0X40)
+#define NEGATIVE_FLAG (0x80)
+
 /***************
   * a data structure used to keep track of
   * the registers used by the cpu
@@ -21,32 +34,6 @@ typedef struct MOS6502{
     uint8_t  *P;   //status register
 }MOS6502;
 
-//status flags for the status register(p)
-#define CARRY_FLAG (0x1)
-#define ZERO_FLAG (0X2)
-#define IRQ_DISABLE_FLAG (0x4) //1=disabled
-#define DECIMAL_FLAG (0x8) //disabled on actual nes 6502
-#define BRK_FLAG (0x10)
-#define OVERFLOW_FLAG (0X40)
-#define NEGATIVE_FLAG (0x80)
-
-//addressing modes
-//non-indexed
-inline uint8_t acc(MOS6502 *cpu); //accumulator
-inline uint8_t imm(MOS6502 *cpu); //immediate
-inline uint8_t imp(MOS6502 *cpu); //implied
-inline uint8_t rel(MOS6502 *cpu); //relative
-inline uint8_t abt(MOS6502 *cpu); //absolute
-inline uint8_t zpg(MOS6502 *cpu); //zero-page
-inline uint8_t ind(MOS6502 *cpu); //indirect
-
-//indexed
-inline uint8_t abt_in(MOS6502 *cpu); //absolute indexed
-inline uint8_t zpg_in(MOS6502 *cpu); //zero-page indexed
-inline uint8_t ind_in(MOS6502 *cpu); //indirect indexed
-inline uint8_t in_ind(MOS6502 *cpu); //indexed indirect
-
-//bitwise logic functions
-inline void AND_byte(uint8_t *a, uint8_t *b, uint8_t *s);
-inline void OR_byte (uint8_t *a, uint8_t *b, uint8_t *s);
-inline void XOR_byte(uint8_t *a, uint8_t *b, uint8_t *s);
+int init_cpu(MOS6502* cpu);
+void reset(MOS6502* cpu);
+#endif //CPU_H__
