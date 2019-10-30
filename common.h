@@ -5,6 +5,9 @@
  *
 */
 
+#define WRITE 0
+#define READ 1
+
 enum ret_flags {
     INIT_FAIL = -10,
     SUCCESS = 1
