@@ -54,7 +54,6 @@ int init_rom(const char* rom, ROM *cart){
 }
 
 //initialize cart data structure
-//this needs to be filled with error checking
 int cart_init(ROM *rom, Header *header){
     int playChoiceINST_ROM, playChoicePROM, trainerExists;
 

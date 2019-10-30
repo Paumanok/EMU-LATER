@@ -10,7 +10,12 @@
 #include "cpu.h"
 
 int cpu(){
-
+    
+    //switch(ins){
+    //case 0x00:
+    //    //....//
+    //case default:
+    //    //....//
     return 0;
 }
 
