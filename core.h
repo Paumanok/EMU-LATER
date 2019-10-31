@@ -1,22 +1,20 @@
+#ifndef CORE_H__
+#define CORE_H__
 /*************
 * core module header for EMU-LATER
 *
 *************/
 
-#include "rom.h"
-#include "cpu.h"
+//#include "rom.h"
+//#include "cpu.h"
 #include "common.h"
+#include "cpu.h"
+#include "rom.h"
 
-typedef struct NES{
-    MOS6502* cpu;
-    ROM* rom;
-    //PPU* ppu;
-    uint8_t  ctrl_bus;
-    uint8_t  data_bus;
-    uint16_t addr_bus;
-}NES;
+
+
 
 int init_nes(NES* nes, char* rom_name);
 
 
-
+#endif

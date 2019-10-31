@@ -21,19 +21,7 @@
 #define OVERFLOW_FLAG (0X40)
 #define NEGATIVE_FLAG (0x80)
 
-/***************
-  * a data structure used to keep track of
-  * the registers used by the cpu
-  **************/
-typedef struct MOS6502{
-    uint16_t *pc;  //program counter
-    uint8_t  *A;   //Accumulator register
-    uint8_t  *Y;   //Index register Y
-    uint8_t  *X;   //Index register X
-    uint8_t  *S;   //stack pointer
-    uint8_t  *P;   //status register
-}MOS6502;
-
+int cpu(NES* nes);
 int init_cpu(MOS6502* cpu);
 void reset(MOS6502* cpu);
 #endif //CPU_H__

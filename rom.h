@@ -7,6 +7,9 @@
 * rom.h
 *****************/
 
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 #include <stdint.h>
 #include "common.h"
 
@@ -17,26 +20,6 @@
 #define INST_ROM_SIZE 8192
 #define PROM_SIZE 8192
 
-typedef struct{
-    uint8_t NES[4];
-    uint8_t PRG_ROM_SIZE;
-    uint8_t CHR_ROM_SIZE;
-    uint8_t Flag_Six;
-    uint8_t Flag_Seven;
-    uint8_t PRG_RAM_SIZE;
-    //uint8_t Flag_Nine; //few honor this flag
-    uint8_t Reserved[7];  //should be all 0s
-}Header;
-
-typedef struct{
-    Header* header;
-    uint8_t *trainer;
-    uint8_t *PRG_ROM;
-    uint8_t *CHR_ROM;
-    uint8_t *INST_ROM;
-    uint8_t *PROM;
-    uint8_t *PRG_RAM;
-}ROM;
 
 int init_rom(const char* rom, ROM *cart);
 

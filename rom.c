@@ -5,13 +5,8 @@
 *
 **************/
 
-#include <stdio.h>
-#include <stdint.h>
-#include <string.h>
-#include <stdlib.h>
 #include "rom.h"
 
-int debug = 1;
 /*
 * main function for rom capture and parsing
 * given file name and rom struct, fills rom struct with needed data
@@ -27,17 +22,17 @@ int init_rom(const char* rom, ROM *cart){
 
     //check for 'NES1A' in header to confirm .nes file
     if(memcmp(romHeader.NES, "NES\x1A", sizeof(romHeader.NES))){
-      if(debug) printf("Header incorrect, exiting");
+      if(DEBUG) printf("Header incorrect, exiting");
       return -1;
     }
 
-    if(debug)  printf("Header:%s\n\rreading...\n\r \
+    if(DEBUG)  printf("Header:%s\n\rreading...\n\r \
     PRG rom size: %d bytes\n \
-    CHR rom size: %d bytes\n ", \
-    romHeader.NES, romHeader.PRG_ROM_SIZE*PRG_ROM_MULT, romHeader.CHR_ROM_SIZE*CHR_ROM_MULT);
-
+    CHR rom size: %d bytes\n",
+    romHeader.NES, romHeader.PRG_ROM_SIZE*PRG_ROM_MULT,
+    romHeader.CHR_ROM_SIZE*CHR_ROM_MULT);
     if(!cart_init(cart, &romHeader)){
-      if(debug) printf("Unable to create virtual cart, exiting");
+      if(DEBUG) printf("Unable to create virtual cart, exiting");
       return -1;
     }
 
@@ -72,7 +67,7 @@ int cart_init(ROM *rom, Header *header){
         if(rom->trainer == NULL) return INIT_FAIL;
     }
 
-    if(debug) 
+    if(DEBUG) 
         printf("trainer initialized\n\r");
     
     rom->PRG_ROM = calloc(header->PRG_ROM_SIZE * PRG_ROM_MULT, sizeof(uint8_t));
@@ -90,6 +85,8 @@ int cart_init(ROM *rom, Header *header){
         rom->PROM = calloc( PROM_SIZE, sizeof(uint8_t));
         if(rom->PROM == NULL) return INIT_FAIL;
     }
+
+    rom->mapper = (header->Flag_Seven & 0xF0) || ((header->Flag_Six & 0xF0) >> 4);  
     
     return SUCCESS;
 }

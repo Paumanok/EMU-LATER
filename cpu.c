@@ -9,27 +9,17 @@
 
 #include "cpu.h"
 
-int cpu(){
-    
-    //switch(ins){
-    //case 0x00:
-    //    //....//
-    //case default:
-    //    //....//
-    return 0;
-}
-
 //initalizes the memory for the cpu registers
 //
 int init_cpu(MOS6502 *cpu ){
-    cpu->pc = malloc(sizeof(uint16_t));
-    cpu->A  = malloc(sizeof(uint8_t));
-    cpu->Y  = malloc(sizeof(uint8_t));
-    cpu->X  = malloc(sizeof(uint8_t));
-    cpu->S  = malloc(sizeof(uint8_t));
-    cpu->P  = malloc(sizeof(uint8_t));
+    cpu->pc = 0x0;
+    cpu->A  = 0x0;
+    cpu->Y  = 0x0;
+    cpu->X  = 0x0;
+    cpu->S  = 0x0;
+    cpu->P  = 0x0;
 
-    return (cpu->pc && cpu->A && cpu->Y && cpu->X  && cpu->S && cpu->P); 
+    return SUCCESS; 
 }
 
 //resets the CPU's registers on boot
@@ -42,5 +32,151 @@ void reset(MOS6502 *cpu){
     cpu->S  = 0x0;
     cpu->P  = 0x0;
 }
+
+int cpu(NES* nes){
+    uint8_t ins = nes->rom->PRG_ROM[nes->cpu->pc]; 
+    switch(ins){
+        ////ALU Operations////
+        //ORA 
+        case 0x01:
+            //indexed indirect ($aa, X)
+        case 0x05:
+            //zero page $aa
+        case 0x09:
+            //immediate #aa
+        case 0x0D:
+            //absolute #aaaa
+        case 0x11:
+            //indirect indexed (#aa), Y
+        case 0x15:
+            //zero page indexed $aa, X
+        case 0x19:
+            //absolute indexed Y $aaaa, Y
+        case 0x1D:
+            //absolute indexed X $aaaa, X
+        //AND
+        case 0x21:
+            //indexed indirect ($aa, X)
+        case 0x25:
+            //zero page $aa
+        case 0x29:
+            //immediate #aa
+        case 0x2D:
+            //absolute #aaaa
+        case 0x31:
+            //indirect indexed (#aa), Y
+        case 0x35:
+            //zero page indexed $aa, X
+        case 0x39:
+            //absolute indexed Y $aaaa, Y
+        case 0x3D:
+            //absolute indexed X $aaaa, X
+        //EOR
+        case 0x41:
+            //indexed indirect ($aa, X)
+        case 0x45:
+            //zero page $aa
+        case 0x49:
+            //immediate #aa
+        case 0x4D:
+            //absolute #aaaa
+        case 0x51:
+            //indirect indexed (#aa), Y
+        case 0x55:
+            //zero page indexed $aa, X
+        case 0x59:
+            //absolute indexed Y $aaaa, Y
+        case 0x5D:
+            //absolute indexed X $aaaa, X
+        //ADC
+        case 0x61:
+            //indexed indirect ($aa, X)
+        case 0x65:
+            //zero page $aa
+        case 0x69:
+            //immediate #aa
+        case 0x6D:
+            //absolute #aaaa
+        case 0x71:
+            //indirect indexed (#aa), Y
+        case 0x75:
+            //zero page indexed $aa, X
+        case 0x79:
+            //absolute indexed Y $aaaa, Y
+        case 0x7D:
+            //absolute indexed X $aaaa, X
+        //STA
+        case 0x81:
+            //indexed indirect ($aa, X)
+        case 0x85:
+            //zero page $aa
+        case 0x89:
+            //NOP
+        case 0x8D:
+            //absolute #aaaa
+        case 0x91:
+            //indirect indexed (#aa), Y
+        case 0x95:
+            //zero page indexed $aa, X
+        case 0x99:
+            //absolute indexed Y $aaaa, Y
+        case 0x9D:
+            //absolute indexed X $aaaa, X
+        //LDA
+        case 0xA1:
+            //indexed indirect ($aa, X)
+        case 0xA5:
+            //zero page $aa
+        case 0xA9:
+            //immediate #aa
+        case 0xAD:
+            //absolute #aaaa
+        case 0xB1:
+            //indirect indexed (#aa), Y
+        case 0xB5:
+            //zero page indexed $aa, X
+        case 0xB9:
+            //absolute indexed Y $aaaa, Y
+        case 0xBD:
+            //absolute indexed X $aaaa, X
+        //CMP
+        case 0xC1:
+            //indexed indirect ($aa, X)
+        case 0xC5:
+            //zero page $aa
+        case 0xC9:
+            //immediate #aa
+        case 0xCD:
+            //absolute #aaaa
+        case 0xD1:
+            //indirect indexed (#aa), Y
+        case 0xD5:
+            //zero page indexed $aa, X
+        case 0xD9:
+            //absolute indexed Y $aaaa, Y
+        case 0xDD:
+            //absolute indexed X $aaaa, X
+        //SBC
+        case 0xE1:
+            //indexed indirect ($aa, X)
+        case 0xE5:
+            //zero page $aa
+        case 0xE9:
+            //immediate #aa
+        case 0xED:
+            //absolute #aaaa
+        case 0xF1:
+            //indirect indexed (#aa), Y
+        case 0xF5:
+            //zero page indexed $aa, X
+        case 0xF9:
+            //absolute indexed Y $aaaa, Y
+        case 0xFD:
+            //absolute indexed X $aaaa, X
+        default:
+            return 0;
+    return 0;
+}
+
 
 
