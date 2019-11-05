@@ -5,6 +5,8 @@
  *
 */
 
+#include <stdint.h>
+
 #define WRITE 0
 #define READ 1
 

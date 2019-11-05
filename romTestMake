@@ -10,7 +10,7 @@ CC=c99
 CFLAGS= -g -Wall -pedantic
 
 #files
-SOURCE= romtest.c rom.c rom.h
+SOURCE= romtest.c rom.c rom.h common.h
 PROG= romTest
 	
 

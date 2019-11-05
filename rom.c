@@ -26,16 +26,15 @@ int init_rom(const char* rom, ROM *cart){
       return -1;
     }
 
-    if(DEBUG)  printf("Header:%s\n\rreading...\n\r \
+    if(DEBUG)  printf("Header:%.*s\n\rreading...\n\r \
     PRG rom size: %d bytes\n \
     CHR rom size: %d bytes\n",
-    romHeader.NES, romHeader.PRG_ROM_SIZE*PRG_ROM_MULT,
+    4/*magic number of NES len*/ ,romHeader.NES, romHeader.PRG_ROM_SIZE*PRG_ROM_MULT,
     romHeader.CHR_ROM_SIZE*CHR_ROM_MULT);
     if(!cart_init(cart, &romHeader)){
       if(DEBUG) printf("Unable to create virtual cart, exiting");
       return -1;
     }
-
     if((romHeader.Flag_Six && 4) >> 3){
      fread(cart->trainer, 1, TRAINER_SIZE, fp);
     }
