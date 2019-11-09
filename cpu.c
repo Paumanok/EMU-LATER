@@ -175,6 +175,7 @@ int cpu(NES* nes){
             //absolute indexed X $aaaa, X
         default:
             return 0;
+    }
     return 0;
 }
 

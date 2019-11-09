@@ -25,6 +25,15 @@ int init_nes(NES* nes, char* rom_name){
 
     nes->rom = rom;
     nes->cpu = cpu;
+    
+    //size of ram x 3 mirrors
+    nes->int_ram = malloc(sizeof(uint8_t)*0x1FFF);
+    if(nes->int_ram == NULL) return INIT_FAIL;
+    
+    //ppu registers
+    nes->ppu_regs = malloc(sizeof(uint8_t)*8);
+    if(nes->ppu_regs == NULL) return INIT_FAIL;
+
     nes->ctrl_bus = 0;
     nes->data_bus = 0;
     nes->addr_bus = 0;

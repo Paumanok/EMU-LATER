@@ -60,9 +60,14 @@ typedef struct{
  * ties together CPU, ROM, MMU, PPU and data busses
  */
 typedef struct NES{
+    //hardware modules
     MOS6502* cpu;
     ROM* rom;
     //PPU* ppu;
+    //internal memory
+    uint8_t* int_ram;
+    uint8_t* ppu_regs;
+    //data bus lines
     uint8_t  ctrl_bus;
     uint8_t  data_bus;
     uint16_t addr_bus;
@@ -70,6 +75,7 @@ typedef struct NES{
 
 enum ret_flags {
     INIT_FAIL = -10,
+    BAD_ADDRESS = -9,
     SUCCESS = 1
 };
 
