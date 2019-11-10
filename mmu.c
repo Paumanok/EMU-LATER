@@ -5,7 +5,7 @@
 
 #include "mmu.h"
 
-void mmu_ctl(NES* nes){
+void mmu_ctrl(NES* nes){
 
     //here we will check where in the address range
     //the address bus is pointing to

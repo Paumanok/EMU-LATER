@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "common.h"
+#include "mmu.h"
 
 //status flags for the status register(p)
 #define CARRY_FLAG (0x1)
@@ -24,4 +25,9 @@
 int cpu(NES* nes);
 int init_cpu(MOS6502* cpu);
 void reset(MOS6502* cpu);
+
+inline uint16_t addr_es(NES* nes);
+
+inline uint8_t zero_page_read(NES* nes);
+inline uint8_t absolute_read(NES* nes);
 #endif //CPU_H__

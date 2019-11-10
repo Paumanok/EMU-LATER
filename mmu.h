@@ -3,7 +3,7 @@
 #include "common.h"
 #include "core.h"
 
-void mmu_ctl(NES* nes);
+void mmu_ctrl(NES* nes);
 
 int write_internal_ram(NES* nes);
 int internal_memory(NES* nes);

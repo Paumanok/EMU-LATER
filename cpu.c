@@ -42,10 +42,20 @@ int cpu(NES* nes){
             //indexed indirect ($aa, X)
         case 0x05:
             //zero page $aa
+            nes->addr_bus = nes->cpu->pc + 1;
+            nes->cpu->A |= zero_page_read(nes);
+            nes->cpu->pc += 2;
+            if(nes->cpu->A == 0) nes->cpu->P | ZERO_FLAG;
+            if(nes->cpu->A >> 7) nes->cpu->P | NEGATIVE_FLAG;
         case 0x09:
             //immediate #aa
         case 0x0D:
             //absolute #aaaa
+            nes->addr_bus = addr_es(nes);
+            nes->cpu->A |= absolute_read(nes);
+            nes->cpu->pc += 3;
+            if(nes->cpu->A == 0) nes->cpu->P | ZERO_FLAG;
+            if(nes->cpu->A >> 7) nes->cpu->P | NEGATIVE_FLAG;
         case 0x11:
             //indirect indexed (#aa), Y
         case 0x15:
@@ -179,5 +189,19 @@ int cpu(NES* nes){
     return 0;
 }
 
+inline uint16_t adr_es(NES* nes){
+    return (nes->rom->PRG_ROM[nes->cpu->pc + 2] << 1 | nes->rom->PRG_ROM[nes->cpu->pc + 1]);
+}
 
+//allow for inline operation with zero_page_read
+inline uint8_t zero_page_read(NES* nes){
+    nes->ctrl_bus = 0;
+    mmu_ctrl(nes);
+    return nes->data_bus;
+}
 
+inline uint8_t absolute_read(NES* nes){
+    nes->ctrl_bus = 0;
+    mmu_ctrl(nes);
+    return nes->data_bus;
+}
