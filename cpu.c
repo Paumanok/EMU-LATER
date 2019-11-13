@@ -40,6 +40,13 @@ int cpu(NES* nes){
         //ORA 
         case 0x01:
             //indexed indirect ($aa, X)
+            //A |= absolute_read(zero_page_read(x + $aa))
+            nes->addr_bus = pcra(nes, 1) + nes->cpu->X; //ab= X+$aa
+            nes->addr_bus = rafm(nes, (uint16_t)zero_page_read(nes)); //ab= *(X+$aa)
+            nes->cpu->A |= absolute_read(nes);           //A |= **(X+$aa)
+            nes->cpu->pc += 2;
+            set_flags(nes);
+
         case 0x05:
             //zero page $aa
             nes->addr_bus = nes->cpu->pc + 1;
@@ -192,14 +199,54 @@ void set_flags(NES* nes){
     if(nes->cpu->A >> 7) nes->cpu->P |= NEGATIVE_FLAG;
 }
 
+// address endian swap
+// for bytes directly following instruction
 uint16_t addr_es(NES* nes){
-    return (nes->rom->PRG_ROM[nes->cpu->pc + 2] << 8 | nes->rom->PRG_ROM[nes->cpu->pc + 1]);
+    return (pcra(nes, 2) << 8 | pcra(nes, 1));
+//    return (nes->rom->PRG_ROM[nes->cpu->pc + 2] << 8 | nes->rom->PRG_ROM[nes->cpu->pc + 1]);
 }
+
+// generic endian swap
+// for bytes in memory
+uint16_t generic_es(uint8_t lsb, uint8_t msb){
+    uint16_t ret_addr = 0;
+    ret_addr = (uint16_t)msb << 8 | lsb;
+    return ret_addr;
+}
+
+// read address from memory
+// will read and endianswap address stored in memory
+// es needed for indexing EMU-Later ram/rom 
+uint16_t rafm(NES* nes, uint16_t base_addr){
+    return generic_es( amrb(nes, base_addr), amrb(nes, base_addr + 1));
+}
+
+// program counter read at
+uint8_t pcra(NES* nes, uint16_t fo){
+    uint8_t db_bak = nes->data_bus; //backup buses
+    uint16_t ab_bak = nes->addr_bus; //same
+    uint8_t cb_bak = nes->ctrl_bus; //same
+    uint8_t ret_byte = 0;
+
+    nes->addr_bus = nes->cpu->pc + fo; //set fetch addr to pc
+    nes->ctrl_bus = 0;  //set to read
+    if( mmu_ctrl(nes) >= SUCCESS)
+        ret_byte = nes->data_bus;
+
+    //regardless of memory read success state, return backups
+    nes->data_bus = db_bak;
+    nes->addr_bus = ab_bak;
+    nes->ctrl_bus = cb_bak;
+
+    return ret_byte;
+
+}
+
 
 //allow for inline operation with zero_page_read
 uint8_t zero_page_read(NES* nes){
-    nes->ctrl_bus = 0;
-    mmu_ctrl(nes);
+    nes->addr_bus &= 0xFF;
+    absolute_read(nes);
     return nes->data_bus;
 }
 

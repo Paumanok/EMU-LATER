@@ -16,19 +16,39 @@
 // Base of MMU controller
 // switch on mapper type to direct
 // memory ops correctly depending on the game. 
-void mmu_ctrl(NES* nes){
+int mmu_ctrl(NES* nes){
     
     switch(nes->rom->mapper) {
         case 0x00:
             printf("Mapper in progress");
-            mapper_0(nes);
+            return mapper_0(nes);
         case 0x01:
             printf("Mapper in progress");
 
         default:
-            return;
+            return BAD_ADDRESS ;
 
     }
+}
+
+//arbitrary memory read byte
+//reads byte from memory without disturbing cpu state
+uint8_t amrb(NES* nes, uint16_t address){
+    uint16_t ab_bak = nes->addr_bus;
+    uint8_t  db_bak = nes->data_bus;
+    uint8_t  cb_bak = nes->ctrl_bus;
+    uint8_t  ret_byte = 0;
+
+    nes->addr_bus = address;
+    nes->ctrl_bus = READ;
+    if(mmu_ctrl(nes) >= SUCCESS)
+        ret_byte = nes->data_bus;
+
+    nes->addr_bus = ab_bak;
+    nes->data_bus = db_bak;
+    nes->ctrl_bus = cb_bak;
+
+    return ret_byte;
 }
 
 int internal_memory(NES* nes){

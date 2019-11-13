@@ -3,8 +3,11 @@
 #include "common.h"
 #include "core.h"
 
-void mmu_ctrl(NES* nes);
+//returns status enum
+int mmu_ctrl(NES* nes);
 
+//arbitrary memory read byte--returns byte from memory
+uint8_t amrb(NES* nes, uint16_t address);
 int write_internal_ram(NES* nes);
 int internal_memory(NES* nes);
 int mapper_0(NES* nes);

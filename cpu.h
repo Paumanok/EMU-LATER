@@ -29,7 +29,9 @@ void reset(MOS6502* cpu);
 //helper functions to abstract repetitive code.
 void set_flags(NES* nes);
 uint16_t addr_es(NES* nes);
-
+uint16_t generic_es(uint8_t lsb, uint8_t msb);
+uint16_t rafm(NES*, uint16_t base_addr);
+uint8_t pcra(NES*, uint16_t);
 uint8_t zero_page_read(NES* nes);
 uint8_t absolute_read(NES* nes);
 #endif //CPU_H__

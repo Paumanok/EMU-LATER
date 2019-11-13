@@ -7,8 +7,8 @@
 
 #include <stdint.h>
 
-#define WRITE 0
-#define READ 1
+#define WRITE 1
+#define READ 0
 
 #define DEBUG 1
 /*
