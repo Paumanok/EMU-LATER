@@ -55,6 +55,8 @@ int cpu(NES* nes){
             set_flags(nes);
         case 0x09:
             //immediate #aa
+            nes->cpu->A |= pcra(nes, 1);
+            nes->cpu->pc += 2;
         case 0x0D:
             //absolute #aaaa
             nes->addr_bus = addr_es(nes);
@@ -65,10 +67,22 @@ int cpu(NES* nes){
             //indirect indexed (#aa), Y
         case 0x15:
             //zero page indexed $aa, X
+            nes->addr_bus = (pcra(nes, 1) + nes->cpu->X);
+            nes->cpu->A |= zero_page_read(nes);
+            nes->cpu->pc += 2;
+            set_flags(nes);
         case 0x19:
             //absolute indexed Y $aaaa, Y
+            nes->addr_bus = addr_es(nes) + nes->cpu->Y;
+            nes->cpu->A |= absolute_read(nes);
+            nes->cpu->pc += 3;
+            set_flags(nes);
         case 0x1D:
             //absolute indexed X $aaaa, X
+            nes->addr_bus = addr_es(nes) + nes->cpu->X;
+            nes->cpu->A |= absolute_read(nes);
+            nes->cpu->pc += 3;
+            set_flags(nes);
         //AND
         case 0x21:
             //indexed indirect ($aa, X)
