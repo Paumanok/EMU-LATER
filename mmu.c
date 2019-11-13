@@ -1,19 +1,22 @@
 /*
  * Memory Managment Unit
+ * 
+ *  Here we will handle various reads and writes to 
+ *  various memory structures the NES has access to.
  *
+ *  Implementation of Mappers will also exist here.
+ *
+ *  This will also handle emulating various 
+ *  game cart hardware as the NES hardware has no 
+ *  understanding of these variations
  */
 
 #include "mmu.h"
 
+// Base of MMU controller
+// switch on mapper type to direct
+// memory ops correctly depending on the game. 
 void mmu_ctrl(NES* nes){
-
-    //here we will check where in the address range
-    //the address bus is pointing to
-    //then double check the control bit to see if its a read or write
-    //then we can make a determination on whether to store what
-    //is in the data bus or load into the data bus
-    //
-    //maybe there should be a consideration for mapping in this function
     
     switch(nes->rom->mapper) {
         case 0x00:
@@ -42,9 +45,9 @@ int internal_memory(NES* nes){
     //PPU registers
     }else if(address >= 0x2000 && address <= 0x3FFF){
         if(control){
-            nes->ppu_regs[address % 8] = nes->data_bus;
+            nes->ppu_regs[(address % 8) - PPU_OFFSET] = nes->data_bus;
         }else{
-            nes->data_bus = nes->ppu_regs[address % 8];
+            nes->data_bus = nes->ppu_regs[(address % 8) - PPU_OFFSET];
         }
 
     //APU & I/O regusters
@@ -62,7 +65,11 @@ int internal_memory(NES* nes){
     return SUCCESS;
 }
 
+// Mapper0/NROM(128/256) implementation
+// handles PRG_ROM mirroring switch depending
+// on PRG_ROM size.
 int mapper_0(NES* nes){
+    uint16_t address;
     if(nes->addr_bus < 0x4020){
         return internal_memory(nes);
     
@@ -70,23 +77,26 @@ int mapper_0(NES* nes){
     
         //PRG_RAM
         if(nes->addr_bus >= 0x6000 && nes->addr_bus <= 0x7FFF){
-            
+            address = nes->addr_bus - M0_PRAM_OFFSET;
             if(nes->ctrl_bus){
-                nes->rom->PRG_RAM[nes->addr_bus] = nes->data_bus;
+                nes->rom->PRG_RAM[address] = nes->data_bus;
             
             }else {
-                nes->data_bus = nes->rom->PRG_RAM[nes->addr_bus];
+                nes->data_bus = nes->rom->PRG_RAM[address];
             }
             
             //PRG_ROM
         } else if(nes->addr_bus >= 0x8000 && nes->addr_bus <= 0xFFFF){
-            uint16_t address = 0;
             //is memory continued or mirror(16KB vs 32KB)
             if(nes->rom->header->PRG_ROM_SIZE == 2){
-                address = nes->addr_bus;
+                address = nes->addr_bus - M0_ROM_OFFSET;
             
             } else {
-                if(nes->addr_bus > 0xBFFF) address = nes->addr_bus - 0x4000;
+                if(nes->addr_bus > 0xBFFF){ 
+                    address = nes->addr_bus - (0x4000 + M0_ROM_OFFSET);
+                } else {
+                    address = nes->addr_bus - M0_ROM_OFFSET;
+                }
             }
             
             nes->data_bus = nes->rom->PRG_ROM[address];
@@ -97,7 +107,9 @@ int mapper_0(NES* nes){
     }
     return SUCCESS;
 }
-
+// Writes to internal RAM and handles RAM mirroring
+// Doesn't need any relative offsets as ram is at start
+// of physical address space.
 int write_internal_ram(NES* nes){
     uint16_t address = nes->addr_bus;
     uint8_t data = nes->data_bus;

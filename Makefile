@@ -14,7 +14,7 @@ DFLAGS = -g
 #all: cpu rom mmu core emu-later
 
 emu-later: core.o cpu.o rom.o mmu.o
-	$(CC) $(CFLAGS) $(DFLAGS)  -o emu-later core.o cpu.o rom.o
+	$(CC) $(CFLAGS) $(DFLAGS)  -o emu-later core.o cpu.o rom.o mmu.o
 
 core: core.c core.h common.h cpu.h rom.h
 	$(CC) $(CFLAGS) $(DFLAGS) -o core.o

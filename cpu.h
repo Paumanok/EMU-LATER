@@ -26,8 +26,10 @@ int cpu(NES* nes);
 int init_cpu(MOS6502* cpu);
 void reset(MOS6502* cpu);
 
-inline uint16_t addr_es(NES* nes);
+//helper functions to abstract repetitive code.
+void set_flags(NES* nes);
+uint16_t addr_es(NES* nes);
 
-inline uint8_t zero_page_read(NES* nes);
-inline uint8_t absolute_read(NES* nes);
+uint8_t zero_page_read(NES* nes);
+uint8_t absolute_read(NES* nes);
 #endif //CPU_H__
