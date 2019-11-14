@@ -20,7 +20,7 @@ int mmu_ctrl(NES* nes){
     
     switch(nes->rom->mapper) {
         case 0x00:
-            printf("Mapper in progress");
+            //printf("Mapper in progress");
             return mapper_0(nes);
         case 0x01:
             printf("Mapper in progress");
@@ -97,14 +97,15 @@ int mapper_0(NES* nes){
     
         //PRG_RAM
         if(nes->addr_bus >= 0x6000 && nes->addr_bus <= 0x7FFF){
-            address = nes->addr_bus - M0_PRAM_OFFSET;
-            if(nes->ctrl_bus){
-                nes->rom->PRG_RAM[address] = nes->data_bus;
-            
-            }else {
-                nes->data_bus = nes->rom->PRG_RAM[address];
-            }
-            
+            ////comment out for now, sorta broken
+            //address = nes->addr_bus - M0_PRAM_OFFSET;
+            //if(nes->ctrl_bus){
+            //    nes->rom->PRG_RAM[address] = nes->data_bus;
+            //
+            //}else {
+            //    nes->data_bus = nes->rom->PRG_RAM[address];
+            //}
+            printf("no prg_ram\n"); 
             //PRG_ROM
         } else if(nes->addr_bus >= 0x8000 && nes->addr_bus <= 0xFFFF){
             //is memory continued or mirror(16KB vs 32KB)

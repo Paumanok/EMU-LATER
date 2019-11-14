@@ -11,10 +11,13 @@ CFLAGS = -Wall -pedantic
 DFLAGS = -g
 
 #build whole project
-#all: cpu rom mmu core emu-later
+all: emu-later cpu-test
 
 emu-later: core.o cpu.o rom.o mmu.o
 	$(CC) $(CFLAGS) $(DFLAGS)  -o emu-later core.o cpu.o rom.o mmu.o
+
+cpu-test: cputest.c cpu.o rom.o mmu.o
+	$(CC) $(CFLAGS) $(DFLAGS) -o cpu-test cputest.c cpu.o rom.o mmu.o
 
 core: core.c core.h common.h cpu.h rom.h
 	$(CC) $(CFLAGS) $(DFLAGS) -o core.o
@@ -34,6 +37,7 @@ clean:
 	rm core.o
 	rm mmu.o
 	rm emu-later
+	rm cpu-test
 
 
 

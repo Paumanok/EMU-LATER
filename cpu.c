@@ -34,7 +34,8 @@ void reset(MOS6502 *cpu){
 }
 
 int cpu(NES* nes){
-    uint8_t ins = nes->rom->PRG_ROM[nes->cpu->pc]; 
+    uint8_t ins = pcra(nes, 0);
+    if(DEBUG) printf("instruction: %x\n", ins);
     int cycles = 0;
     switch(ins){
         ////ALU Operations////
@@ -48,6 +49,7 @@ int cpu(NES* nes){
             nes->cpu->pc += 2;
             set_flags(nes);
             cycles = 6;
+            break;
         case 0x05:
             //zero page $aa
             nes->addr_bus = nes->cpu->pc + 1;
@@ -55,12 +57,14 @@ int cpu(NES* nes){
             nes->cpu->pc += 2;
             set_flags(nes);
             cycles = 3;
+            break;
         case 0x09:
             //immediate #aa
             nes->cpu->A |= pcra(nes, 1);
             nes->cpu->pc += 2;
             set_flags(nes);
             cycles = 2;
+            break;
         case 0x0D:
             //absolute #aaaa
             nes->addr_bus = addr_es(nes);
@@ -68,6 +72,7 @@ int cpu(NES* nes){
             nes->cpu->pc += 3;
             set_flags(nes);
             cycles = 4;
+            break;
         case 0x11:
             //indirect indexed (#aa), Y
             nes->addr_bus = pcra(nes, 1); //ab=$aa
@@ -76,6 +81,7 @@ int cpu(NES* nes){
             nes->cpu->pc += 2;
             set_flags(nes);
             cycles = ((nes->addr_bus & 0xFF) > nes->cpu->Y) ? 5 : 6; //boundry cross check
+            break;
         case 0x15:
             //zero page indexed $aa, X
             nes->addr_bus = (pcra(nes, 1) + nes->cpu->X);
@@ -83,6 +89,7 @@ int cpu(NES* nes){
             nes->cpu->pc += 2;
             set_flags(nes);
             cycles = 4;
+            break;
         case 0x19:
             //absolute indexed Y $aaaa, Y
             nes->addr_bus = addr_es(nes) + nes->cpu->Y;
@@ -90,6 +97,7 @@ int cpu(NES* nes){
             nes->cpu->pc += 3;
             set_flags(nes);
             cycles = (nes->addr_bus & 0xFF) > nes->cpu->Y ? 4 : 5;
+            break;
         case 0x1D:
             //absolute indexed X $aaaa, X
             nes->addr_bus = addr_es(nes) + nes->cpu->X;
@@ -97,6 +105,7 @@ int cpu(NES* nes){
             nes->cpu->pc += 3;
             set_flags(nes);
             cycles = (nes->addr_bus & 0xFF) > nes->cpu->X ? 4 : 5;
+            break;
         //AND
         case 0x21:
             //indexed indirect ($aa, X)
@@ -219,7 +228,7 @@ int cpu(NES* nes){
         default:
             return 0;
     }
-    return 0;
+    return cycles;
 }
 
 void set_flags(NES* nes){
@@ -258,6 +267,7 @@ uint8_t pcra(NES* nes, uint16_t fo){
 
     nes->addr_bus = nes->cpu->pc + fo; //set fetch addr to pc
     nes->ctrl_bus = 0;  //set to read
+    if(DEBUG) printf("pcra read from %x\n", nes->addr_bus);
     if( mmu_ctrl(nes) >= SUCCESS)
         ret_byte = nes->data_bus;
 
@@ -280,6 +290,7 @@ uint8_t zero_page_read(NES* nes){
 
 uint8_t absolute_read(NES* nes){
     nes->ctrl_bus = 0;
+    if(DEBUG) printf("absolute read at %x\n", nes->addr_bus);
     mmu_ctrl(nes);
     return nes->data_bus;
 }
