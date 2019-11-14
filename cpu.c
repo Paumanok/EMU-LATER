@@ -294,3 +294,17 @@ uint8_t absolute_read(NES* nes){
     mmu_ctrl(nes);
     return nes->data_bus;
 }
+
+void print_cpu_state(NES* nes){
+    printf("PC: 0x%04x\n\r" 
+           "A : 0x%02x\n\r" 
+           "X : 0x%02x\n\r" 
+           "Y : 0x%02x\n\r" 
+           "AB: 0x%04x\n\r" 
+           "DB: 0x%02x\n\r" 
+           "CB: 0x%02x\n\n", 
+            nes->cpu->pc, nes->cpu->A, nes->cpu->X, 
+            nes->cpu->Y, nes->addr_bus, nes->data_bus, 
+            nes->ctrl_bus);
+
+}

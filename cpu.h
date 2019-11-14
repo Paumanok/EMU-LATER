@@ -34,4 +34,5 @@ uint16_t rafm(NES*, uint16_t base_addr);
 uint8_t pcra(NES*, uint16_t);
 uint8_t zero_page_read(NES* nes);
 uint8_t absolute_read(NES* nes);
+void print_cpu_state(NES* nes);
 #endif //CPU_H__

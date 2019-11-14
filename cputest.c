@@ -55,7 +55,7 @@ int main(int argc, char* argv[]){
     while(nes->cpu->pc < 0x8000 + 19){
         printf("opcode: %x\n", cust_rom[nes->cpu->pc - 0x8000]);
         printf("cylces used: %d\n", cpu(nes));
-        printf("CPU state: pc: %x\n Accumulator: %x\n X: %x\n Y: %x\n", nes->cpu->pc, nes->cpu->A, nes->cpu->X, nes->cpu->Y);
+        print_cpu_state(nes);
         nes->cpu->A = 0xAB;
         sleep(1);  
     }
