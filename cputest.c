@@ -1,4 +1,4 @@
-/*
+/
  * CPU test module
  * mocks memory and instructions
  *
@@ -23,6 +23,8 @@ uint8_t cust_rom[] = {0x01, 0x10, //indexed indirect
 
 
 char* bullshit = "abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+//char* rambullshit = ""
+
 
 int main(int argc, char* argv[]){
     NES* nes = malloc(sizeof(NES));
