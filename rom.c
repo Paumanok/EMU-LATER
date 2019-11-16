@@ -16,6 +16,8 @@ int init_rom(const char* rom, ROM *cart){
     FILE *fp;
     Header romHeader;
 
+    if(DEBUG) printf("========= ROM  INIT =========\n");
+
     fp = fopen(rom, "rb");
     if(NULL == fp) return -1; //check file loaded
     fread(&romHeader, 1, sizeof(Header), fp); //read header
@@ -44,6 +46,8 @@ int init_rom(const char* rom, ROM *cart){
     fread(cart->CHR_ROM, 1, romHeader.CHR_ROM_SIZE * CHR_ROM_MULT, fp);
 
     fclose(fp);
+
+    if(DEBUG) printf("======== ROM INIT END ========\n\n");
     return returnState;
 }
 

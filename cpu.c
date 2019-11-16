@@ -267,10 +267,10 @@ uint8_t pcra(NES* nes, uint16_t fo){
 
     nes->addr_bus = nes->cpu->pc + fo; //set fetch addr to pc
     nes->ctrl_bus = 0;  //set to read
-    if(DEBUG) printf("pcra read from %x\n", nes->addr_bus);
     if( mmu_ctrl(nes) >= SUCCESS)
         ret_byte = nes->data_bus;
 
+    if(DEBUG) printf("pcra read 0x%x from 0x%x\n",nes->data_bus, nes->addr_bus);
     //regardless of memory read success state, return backups
     nes->data_bus = db_bak;
     nes->addr_bus = ab_bak;
@@ -290,8 +290,9 @@ uint8_t zero_page_read(NES* nes){
 
 uint8_t absolute_read(NES* nes){
     nes->ctrl_bus = 0;
-    if(DEBUG) printf("absolute read at %x\n", nes->addr_bus);
     mmu_ctrl(nes);
+    
+    if(DEBUG) printf("absolute read 0x%x at 0x%x\n", nes->data_bus, nes->addr_bus);
     return nes->data_bus;
 }
 

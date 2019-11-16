@@ -12,17 +12,28 @@
 int init_nes(NES* nes, char* rom_name);
 
 uint8_t cust_rom[] = {0x01, 0x10, //indexed indirect
-                      0x05, 0x12, //zeropage
+                      0x05, 0x2e, //zeropage
                       0x09, 0x14, //immediate
-                      0x0D, 0x20, 0x01, //absolute #0120
-                      0x11, 0x24, //indirect indexed
+                      0x0D, 0x20, 0x10, //absolute #0120
+                      0x11, 0x10, //indirect indexed
                       0x15, 0x26,  //zeropage indexed
-                      0x19, 0x20, 0x02, //absolute indexed Y
-                      0x1D, 0x20, 0x02  //absolute indexed X
+                      0x19, 0x20, 0x10, //absolute indexed Y
+                      0x1D, 0x20, 0x10  //absolute indexed X
 };
 
 
 char* bullshit = "abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+uint8_t mock_ram[] = { 
+0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x46,
+0x10,0x0,0x0,0x0,0x0,0x0,0x0,0x41,
+0x10,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+0x0,0x0,0x0,0x0,0x0,0xc4,0x0,0x0,
+0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+0x0,0x0,0x0,0x0,0x0,0x0,0x0};
+#define mock_ram_size 0x40
 //char* rambullshit = ""
 
 
@@ -39,27 +50,33 @@ int main(int argc, char* argv[]){
     printf("first place in prg_rom: %x\n", nes->rom->PRG_ROM[0]);
     //fill internal ram with dumbass shit
     nes->ctrl_bus = WRITE;
-    for(uint16_t i = 0; i < 0x1000; i++){
+    //we write up until the end of the first mirrored bank
+    for(uint16_t i = 0; i < 0x800; i++){
         //set ram addr
         nes->addr_bus = i;
-        //give data bus a byte from bullshit array
-        nes->data_bus = bullshit[i % 62];
+        
+
+        if(i <= mock_ram_size){
+            nes->data_bus = mock_ram[i];
+        }else{
+            //give data bus a byte from bullshit array
+            nes->data_bus = bullshit[i % 62];
+        }
         //send away for writin
         mmu_ctrl(nes);
     }
-    
 
     nes->cpu->pc = 0x8000;
     nes->cpu->A = 0xAB;
     nes->cpu->X = 0x8;
-    nes->cpu->Y = 0x12;
+    nes->cpu->Y = 0x8;
     nes->ctrl_bus = READ;
     while(nes->cpu->pc < 0x8000 + 19){
         printf("opcode: %x\n", cust_rom[nes->cpu->pc - 0x8000]);
         printf("cylces used: %d\n", cpu(nes));
         print_cpu_state(nes);
         nes->cpu->A = 0xAB;
-        sleep(1);  
+        sleep(.5);  
     }
     
     return SUCCESS;
