@@ -1,2 +1,2 @@
 #!/bin/bash
-./kiss_sdl2/sdl_test
+./kiss_sdl2/emulator
