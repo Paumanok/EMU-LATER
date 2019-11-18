@@ -180,11 +180,11 @@ static void button_ok1_event(kiss_button *button, SDL_Event *e,
                     CURRENT_ADDRESS = 0;
                     LAST_ADDRESS = (rom->header->PRG_ROM_SIZE*PRG_ROM_MULT) / 64;
 
-                    kiss_string_copy(label_addrs_val->text, KISS_MAX_LABEL, "0x00", "");
+                    kiss_string_copy(label_addrs_val->text, KISS_MAX_LABEL, "0x0010", "");
 
                     char instruction[BUFFER_SIZE];
                     uint8_t val = read_rom(rom, CURRENT_ADDRESS);
-                    printf("ADDRESS: 0x%02x\nVALUE: 0x%02x\n", CURRENT_ADDRESS, val);
+                    printf("ADDRESS: 0x%04x\nVALUE: 0x%02x\n", CURRENT_ADDRESS + 0x10, val);
                     sprintf(instruction, "0x%02x", val);
 
                     kiss_string_copy(label_inst_val->text, KISS_MAX_LABEL, instruction, "");
@@ -229,7 +229,7 @@ static void button_debug_event(kiss_button *button, SDL_Event *e, kiss_label *la
             if (rom != NULL && CURRENT_ADDRESS >= 0 && CURRENT_ADDRESS < LAST_ADDRESS) {
                 // create new address label
                 char addrs[BUFFER_SIZE];
-                sprintf(addrs, "0x%02x", CURRENT_ADDRESS);
+                sprintf(addrs, "0x%04x", CURRENT_ADDRESS + 0x10);
 
                 // update the address in the window
                 kiss_string_copy(label_addrs_val->text, KISS_MAX_LABEL, addrs, "");
@@ -237,7 +237,7 @@ static void button_debug_event(kiss_button *button, SDL_Event *e, kiss_label *la
                 // read next instruction from the rom and convert create a new string to cast it
                 char instruction[BUFFER_SIZE];
                 uint8_t val = read_rom(rom, CURRENT_ADDRESS);
-                printf("ADDRESS: 0x%02x\nVALUE: 0x%02x\n", CURRENT_ADDRESS, val);
+                printf("ADDRESS: 0x%04x\nVALUE: 0x%02x\n", CURRENT_ADDRESS + 0x10, val);
                 sprintf(instruction, "0x%02x", val);
 
                 // update the instruction value in the window
