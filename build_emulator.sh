@@ -1,8 +1,16 @@
 #!/bin/bash
 gcc -I kiss_sdl2/ -I kiss_sdl2/include/SDL2/ -Wall -c rom.c rom_debug.c rom_debug_kiss_sdl2.c kiss_sdl2/*.c
 
-gcc *.o -I kiss_sdl2/ -I kiss_sdl2/include/SDL2/ -L kiss_sdl2/ -L kiss_sdl2/lib/ -l SDL2 -l SDL2_ttf -l SDL2_image -o emulator
+gcc *.o -I kiss_sdl2/ -I kiss_sdl2/include/SDL2/ -L kiss_sdl2/ -L kiss_sdl2/lib/ -l SDL2 -l SDL2_ttf -l SDL2_image -o emulator.out
 
-mv emulator kiss_sdl2/emulator
+mkdir object_files
 
-mv *.o kiss_sdl2/
+mv *.o object_files/
+
+mkdir emulator
+
+mv emulator.out emulator
+
+cp -r kiss_sdl2/*.png emulator/
+
+cp -r kiss_sdl2/*.ttf emulator/
