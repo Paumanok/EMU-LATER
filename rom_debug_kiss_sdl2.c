@@ -31,6 +31,8 @@ static ROM *rom = NULL;
 static int LAST_ADDRESS = -1; // = rom->header-> PRG_ROM_SIZE * PRG_ROM_MULT / 64
 static int CURRENT_ADDRESS = -1;
 
+static int BUFFER_SIZE = 50; // TODO use a sane buffer size once I remember how to do type conversions properly in C
+
 static void text_reset(kiss_textbox *textbox, kiss_vscrollbar *vscrollbar)
 {
 	qsort(textbox->array->data, textbox->array->length, sizeof(void *),
@@ -173,15 +175,20 @@ static void button_ok1_event(kiss_button *button, SDL_Event *e,
                 printf("fileName %s", fileName);
                 rom = build_rom(fileName);
                 if (rom != NULL) {
+                    printf("=======rom initialized succesfully========\n");
+
                     CURRENT_ADDRESS = 0;
                     LAST_ADDRESS = (rom->header->PRG_ROM_SIZE*PRG_ROM_MULT) / 64;
+
                     kiss_string_copy(label_addrs_val->text, KISS_MAX_LABEL, "0x00", "");
-                    char instruction[sizeof(uint8_t)];
-                    sprintf(instruction, "%02x", read_rom(rom, CURRENT_ADDRESS));
+
+                    char instruction[BUFFER_SIZE];
+                    uint8_t val = read_rom(rom, CURRENT_ADDRESS);
+                    printf("ADDRESS: 0x%02x\nVALUE: 0x%02x\n", CURRENT_ADDRESS, val);
+                    sprintf(instruction, "0x%02x", val);
+
                     kiss_string_copy(label_inst_val->text, KISS_MAX_LABEL, instruction, "");
                 }
-                printf("CURRENT ADDRESS: %d", CURRENT_ADDRESS);
-                printf("LAST ADDRESS: %d", LAST_ADDRESS);
 
                 // copy file name over to the label in the loading window up to the max label length
 		kiss_string_copy(label_res->text, KISS_MAX_LABEL, 
@@ -219,18 +226,23 @@ static void button_ok2_event(kiss_button *button, SDL_Event *e,
 static void button_debug_event(kiss_button *button, SDL_Event *e, kiss_label *label_addrs_val, kiss_label *label_inst_val, int *draw)
 {
         if (kiss_button_event(button, e, draw)) {
-            printf("CURRENT ADDRESS: %d", CURRENT_ADDRESS);
-            printf("LAST ADDRESS: %d", LAST_ADDRESS);
-
             if (rom != NULL && CURRENT_ADDRESS >= 0 && CURRENT_ADDRESS < LAST_ADDRESS) {
-                // update address label
-                char addrs[sizeof(uint8_t)];
-                sprintf(addrs, "%02x", CURRENT_ADDRESS);
-                kiss_string_copy(label_addrs_val->text, KISS_MAX_LABEL, "", addrs);
+                // create new address label
+                char addrs[BUFFER_SIZE];
+                sprintf(addrs, "0x%02x", CURRENT_ADDRESS);
 
-                char inst[sizeof(uint8_t)];
-                sprintf(inst, "%02x", read_rom(rom, CURRENT_ADDRESS));
-                kiss_string_copy(label_inst_val->text, KISS_MAX_LABEL, "", inst);
+                // update the address in the window
+                kiss_string_copy(label_addrs_val->text, KISS_MAX_LABEL, addrs, "");
+
+                // read next instruction from the rom and convert create a new string to cast it
+                char instruction[BUFFER_SIZE];
+                uint8_t val = read_rom(rom, CURRENT_ADDRESS);
+                printf("ADDRESS: 0x%02x\nVALUE: 0x%02x\n", CURRENT_ADDRESS, val);
+                sprintf(instruction, "0x%02x", val);
+
+                // update the instruction value in the window
+                kiss_string_copy(label_inst_val->text, KISS_MAX_LABEL, instruction, "");
+
                 CURRENT_ADDRESS += 1;
                 *draw = 1;
             }
