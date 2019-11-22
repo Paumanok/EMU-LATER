@@ -10,22 +10,16 @@ All software is provided "as-is" under the GNU Public License and can be freely 
 
 - The following libraries need to be installed on your machine (i.e. through "apt-get" on Linux, or "brew install" on Mac-OSX, etc)
 
-	> SDL2
-
-	> SDL2_image
-
-	> SDL2_tff
-
+  - OSX 
+	> #brew install SDL2 SDL2_image SDL2_tff
+   - Arch Linux
+		> #pacman -S sdl2 sdl2_image sdl2_tff
   
 
 # Building and Running
-
-- There are a couple options to build the project depending on how your operating system has installed the dependencies with its package manager.
-
-	> 1) make
-        > running make will build both sdl_gui 
-
-	> 2) ./setup.sh
-        > deppreciated
-	> 3) manual gcc build
-        > dont recommend
+ - With dependencies installed run "make"
+   - This will build the following:
+     - cpu-test: runs dummy instructions to test implemented instructions.
+     - rom-test: loads a given rom and parses the header and provides basic information.
+     - emu-later: core build, currently doesn't run anything besides loading rom, but will build whole core to ensure it builds.
+     - emu_gui: sdl gui frontend.
