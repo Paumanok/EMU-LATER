@@ -5,51 +5,29 @@
 # author: Matthew Smith mrs9107@g.rit.edu
 #----------------------------------
 
+
 ## for GCC
 CC = gcc
 CFLAGS = -Wall -pedantic
 DFLAGS = -g
+SDL_LIB = kiss_sdl2/ kiss_sdl2/include/SDL2
 
-#build whole project
-all: emu-later cpu-test rom-test
+.PHONY: all
+all: nes kiss-gui
 
-emu-later: core.o cpu.o rom.o mmu.o
-	$(CC) $(CFLAGS) $(DFLAGS)  -o emu-later core.o cpu.o rom.o mmu.o
+nes:
+	cd src && $(MAKE)
 
-cpu-test: cputest.c cpu.o rom.o mmu.o
-	$(CC) $(CFLAGS) $(DFLAGS) -o cpu-test cputest.c cpu.o rom.o mmu.o
+kiss-gui:
+	cd gui && $(MAKE)
 
-rom-test: romtest.c rom.o
-	$(CC) $(CFLAGS) $(DFLAGS) -o rom-test romtest.c rom.o
+nes-clean:
+	cd src && $(MAKE) clean
 
-core: core.c core.h common.h cpu.h rom.h
-	$(CC) $(CFLAGS) $(DFLAGS) -o core.o
+gui-clean:
+	cd gui && $(MAKE) clean
 
-cpu: cpu.c cpu.h common.h
-	$(CC) $(CFLAGS) $(DFLAGS) -c cpu.c
-
-rom: rom.c rom.h common.h
-	$(CC) $(CFLAGS) $(DFLAGS) -c rom.c
-
-mmu: mmu.c mmu.h common.h
-	$(CC) $(CFLAGS) $(DFLAGS) -c mmu.c
 
 clean:
-	rm cpu.o
-	rm rom.o
-	rm core.o
-	rm mmu.o
-	rm emu-later
-	rm cpu-test
-	rm rom-test
-
-clean-cputest:
-	rm cpu-test
-	rm cpu.o
-	rm rom.o
-	rm mmu.o
-
-clean-romtest:
-	rm rom-test
-	rm rom.o
-
+	cd src && $(MAKE) clean
+	cd gui && $(MAKE) clean

@@ -23,6 +23,7 @@
 */
 
 #include "kiss_sdl.h"
+#include "resources.h"
 
 kiss_font kiss_textfont, kiss_buttonfont;
 kiss_image kiss_normal, kiss_prelight, kiss_active, kiss_bar,
@@ -196,23 +197,23 @@ SDL_Renderer* kiss_init(char* title, kiss_array *a, int w, int h)
 	renderer = SDL_CreateRenderer(window, -1,
 		SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 	if (renderer) kiss_array_append(a, RENDERER_TYPE, renderer);
-	r += kiss_font_new(&kiss_textfont, "kiss_font.ttf", a,
+	r += kiss_font_new(&kiss_textfont, font, a,
 		kiss_textfont_size);
-	r += kiss_font_new(&kiss_buttonfont, "kiss_font.ttf", a,
+	r += kiss_font_new(&kiss_buttonfont, font, a,
 		kiss_buttonfont_size);
-	r += kiss_image_new(&kiss_normal, "kiss_normal.png", a, renderer);
-	r += kiss_image_new(&kiss_prelight, "kiss_prelight.png", a, renderer);
-	r += kiss_image_new(&kiss_active, "kiss_active.png", a, renderer);
-	r += kiss_image_new(&kiss_bar, "kiss_bar.png", a, renderer);
-	r += kiss_image_new(&kiss_vslider, "kiss_vslider.png", a, renderer);
-	r += kiss_image_new(&kiss_hslider, "kiss_hslider.png", a, renderer);
-	r += kiss_image_new(&kiss_up, "kiss_up.png", a, renderer);
-	r += kiss_image_new(&kiss_down, "kiss_down.png", a, renderer);
-	r += kiss_image_new(&kiss_left, "kiss_left.png", a, renderer);
-	r += kiss_image_new(&kiss_right, "kiss_right.png", a, renderer);
-	r += kiss_image_new(&kiss_combo, "kiss_combo.png", a, renderer);
-	r += kiss_image_new(&kiss_selected, "kiss_selected.png", a, renderer);
-	r += kiss_image_new(&kiss_unselected, "kiss_unselected.png", a,
+	r += kiss_image_new(&kiss_normal, normal, a, renderer);
+	r += kiss_image_new(&kiss_prelight, prelight, a, renderer);
+	r += kiss_image_new(&kiss_active, active, a, renderer);
+	r += kiss_image_new(&kiss_bar, bar, a, renderer);
+	r += kiss_image_new(&kiss_vslider,vslider, a, renderer);
+	r += kiss_image_new(&kiss_hslider, hslider, a, renderer);
+	r += kiss_image_new(&kiss_up, up, a, renderer);
+	r += kiss_image_new(&kiss_down, down, a, renderer);
+	r += kiss_image_new(&kiss_left, left, a, renderer);
+	r += kiss_image_new(&kiss_right, right, a, renderer);
+	r += kiss_image_new(&kiss_combo, combo, a, renderer);
+	r += kiss_image_new(&kiss_selected, selected, a, renderer);
+	r += kiss_image_new(&kiss_unselected, unselected, a,
 		renderer);
 	if (r) {
 		kiss_clean(a);

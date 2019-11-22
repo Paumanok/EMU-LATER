@@ -22,8 +22,8 @@
   kiss_sdl version 1.2.0
 */
 
-#include "kiss_sdl.h"
-#include "rom.h"
+#include "../kiss_sdl2/kiss_sdl.h"
+#include "../src/rom.h"
 #include "rom_debug.h"
 
 // Global rom pointer for now. Initialized once user selects a filename

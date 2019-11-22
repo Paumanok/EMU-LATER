@@ -8,8 +8,8 @@
 *****************/
 
 #include <stdint.h>
-#include "common.h"
-#include "rom.h"
+#include "../src/common.h"
+#include "../src/rom.h"
 
 ROM* build_rom(char* fileName);
 

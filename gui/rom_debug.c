@@ -2,7 +2,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "rom.h"
+#include "../src/rom.h"
 #include "rom_debug.h"
 
 
