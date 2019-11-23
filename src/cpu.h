@@ -22,9 +22,32 @@
 #define OVERFLOW_FLAG (0X40)
 #define NEGATIVE_FLAG (0x80)
 
+//& with instruction to determine addressing modg
+#define ADDR_MODE_MASK (0x1F)
+
+//addressing modes
+#define INDEXED_INDIRECT  (0x01) 
+#define ZERO_PAGE         (0x05)
+#define IMMEDIATE         (0x09)
+#define ABSOLUTE          (0x0D)
+#define INDIRECT_INDEXED  (0x11)
+#define ZERO_PAGE_INDEXED (0x15)
+#define ABSOLUTE_INDEXEDX (0x19)
+#define ABSOLUTE_INDEXEDY (0x1D)
+
 int cpu(NES* nes);
 int init_cpu(MOS6502* cpu);
 void reset(MOS6502* cpu);
+
+void eval_addr_mode(NES*, uint8_t);
+void indexed_indirect(NES* nes);
+void zero_page(NES*);
+void immediate(NES*);
+void absolute(NES*);
+void indirect_indexed(NES*);
+void zero_page_indexed(NES*);
+void absolute_indexed_x(NES*);
+void absolute_indexed_y(NES*);
 
 //helper functions to abstract repetitive code.
 void set_flags(NES* nes);
