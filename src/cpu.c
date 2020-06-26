@@ -39,7 +39,7 @@ int cpu(NES* nes){
     int cycles = 0;
     switch(ins){
         ////ALU Operations////
-        //ORA 
+//ORA 
         case 0x01:
             //indexed indirect ($aa, X)
             //A |= absolute_read(zero_page_read(x + $aa))
@@ -106,7 +106,7 @@ int cpu(NES* nes){
             set_flags(nes);
             cycles = (nes->addr_bus & 0xFF) > nes->cpu->X ? 4 : 5;
             break;
-        //AND
+//AND
         case 0x21:
             //indexed indirect ($aa, X)
             nes->addr_bus = pcra(nes, 1) + nes->cpu->X; //ab= X+$aa
@@ -172,7 +172,7 @@ int cpu(NES* nes){
             set_flags(nes);
             cycles = (nes->addr_bus & 0xFF) > nes->cpu->X ? 4 : 5;
             break;
-        //EOR
+//EOR
         case 0x41:
             //indexed indirect ($aa, X)
             nes->addr_bus = pcra(nes, 1) + nes->cpu->X; //ab= X+$aa
@@ -238,7 +238,7 @@ int cpu(NES* nes){
             set_flags(nes);
             cycles = (nes->addr_bus & 0xFF) > nes->cpu->X ? 4 : 5;
             break;
-        //ADC
+//ADC
         case 0x61:
             //indexed indirect ($aa, X)
             nes->addr_bus = pcra(nes, 1) + nes->cpu->X; //ab= X+$aa
@@ -303,7 +303,7 @@ int cpu(NES* nes){
             set_flags(nes);
             cycles = (nes->addr_bus & 0xFF) > nes->cpu->X ? 4 : 5;
             break;
-        //STA
+//STA
         case 0x81:
             //indexed indirect ($aa, X)
             nes->addr_bus = pcra(nes, 1) + nes->cpu->X; //ab= X+$aa
@@ -372,24 +372,88 @@ int cpu(NES* nes){
             nes->cpu->pc += 3;
             cycles = 5;
             break;
-        //LDA
+//LDA
         case 0xA1:
             //indexed indirect ($aa, X)
+            nes->addr_bus = pcra(nes, 1) + nes->cpu->X; //ab = X+$aa
+            nes->addr_bus = rafm(nes, (uint16_t)zero_page_read(nes)); //ab= *(X+$aa)
+            nes->ctrl_bus = READ;
+            mmu_ctrl(nes); //read at address bus and populate databus
+            nes->cpu->A = nes->data_bus; 
+            set_flags(nes);
+            nes->cpu->pc += 2;
+            cycles = 6;
+            break;
         case 0xA5:
             //zero page $aa
+            nes->addr_bus = pcra(nes, 1);
+            nes->ctrl_bus = READ;
+            mmu_ctrl(nes);
+            nes->cpu->A = nes->data_bus;
+            set_flags(nes);
+            nes->cpu->pc += 2;
+            cycles = 3;
+            break;
         case 0xA9:
             //immediate #aa
+            nes->cpu->A = pcra(nes, 1);
+            set_flags(nes);
+            nes->cpu->pc += 2;
+            cycles = 2;
+            break;
         case 0xAD:
             //absolute #aaaa
+            nes->addr_bus = addr_es(nes);
+            nes->ctrl_bus = READ;
+            mmu_ctrl(nes);
+            nes->cpu->A = nes->data_bus;
+            set_flags(nes);
+            nes->cpu->pc += 3;
+            cycles = 4;
+            break;
         case 0xB1:
             //indirect indexed (#aa), Y
+            nes->addr_bus = pcra(nes, 1); //ab = $aa
+            nes->addr_bus = rafm(nes, (uint16_t)zero_page_read(nes)) + nes->cpu->Y;
+            nes->ctrl_bus = READ;
+            mmu_ctrl(nes);
+            nes->cpu->A = nes->data_bus;
+            set_flags(nes);
+            nes->cpu->pc += 2;
+            cycles = ((nes->addr_bus & 0xFF) > nes->cpu->Y) ? 5 : 6; //boundry cross check
+            break;
         case 0xB5:
             //zero page indexed $aa, X
+            nes->addr_bus = (pcra(nes, 1) + nes->cpu->X);
+            nes->ctrl_bus = READ;
+            mmu_ctrl(nes);
+            nes->cpu->A = nes->data_bus;
+            set_flags(nes);
+            nes->cpu->pc += 2;
+            cycles = 4;
+            break;
         case 0xB9:
             //absolute indexed Y $aaaa, Y
+            nes->addr_bus = addr_es(nes) + nes->cpu->Y;
+            nes->ctrl_bus = READ;
+            mmu_ctrl(nes);
+            nes->cpu->A = nes->data_bus;
+            set_flags(nes);
+            nes->cpu->pc += 3;
+            cycles = ((nes->addr_bus & 0xFF) > nes->cpu->Y) ? 4 : 5; //boundry cross check
+            break;
         case 0xBD:
             //absolute indexed X $aaaa, X
-        //CMP
+            nes->addr_bus = addr_es(nes) + nes->cpu->X;
+            nes->ctrl_bus = READ;
+            mmu_ctrl(nes);
+            nes->cpu->A = nes->data_bus;
+            set_flags(nes);
+            nes->cpu->pc += 3;
+            cycles = ((nes->addr_bus & 0xFF) > nes->cpu->Y) ? 4 : 5; //boundry cross check
+            break;
+
+//CMP
         case 0xC1:
             //indexed indirect ($aa, X)
         case 0xC5:
@@ -406,7 +470,7 @@ int cpu(NES* nes){
             //absolute indexed Y $aaaa, Y
         case 0xDD:
             //absolute indexed X $aaaa, X
-        //SBC
+//SBC
         case 0xE1:
             //indexed indirect ($aa, X)
         case 0xE5:
