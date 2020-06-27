@@ -51,7 +51,7 @@ typedef struct{
  */
 typedef struct{
     uint16_t pc;  //program counter
-    uint8_t  A;   //Accumulator register
+    int8_t  A;   //Accumulator register
     uint8_t  Y;   //Index register Y
     uint8_t  X;   //Index register X
     uint8_t  S;   //stack pointer

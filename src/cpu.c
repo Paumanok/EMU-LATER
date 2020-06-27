@@ -34,6 +34,7 @@ void reset(MOS6502 *cpu){
 }
 
 int cpu(NES* nes){
+    int8_t acmb = 0; //defined acm backup
     uint8_t ins = pcra(nes, 0);
     if(DEBUG) printf("instruction: %x\n", ins);
     int cycles = 0;
@@ -454,39 +455,153 @@ int cpu(NES* nes){
             break;
 
 //CMP
+        //CMP instruction doesn't affect accumulator state so backup/restore of acm register needed
+        //in order for set_flags to operate properly
         case 0xC1:
             //indexed indirect ($aa, X)
+            nes->addr_bus = pcra(nes, 1) + nes->cpu->X; //ab= X+$aa
+            nes->addr_bus = rafm(nes, (uint16_t)zero_page_read(nes)); //ab= *(X+$aa)
+            acmb = nes->cpu->A; //accumulator backup
+            nes->cpu->A -= absolute_read(nes) + (nes->cpu->P && CARRY_FLAG ? 1 : 0);           //A += **(X+$aa)
+            nes->cpu->pc += 2;
+            set_flags(nes);
+            nes->cpu->A = acmb; //accumulator restore
+            cycles = 6;
         case 0xC5:
             //zero page $aa
+            nes->addr_bus = pcra(nes, 1);
+            acmb = nes->cpu->A; //accumulator backup
+            nes->cpu->A -= zero_page_read(nes) + (nes->cpu->P && CARRY_FLAG ? 1 : 0);
+            nes->cpu->pc += 2;
+            set_flags(nes);
+            nes->cpu->A = acmb; //accumulator restore
+            cycles = 3;
+            break;
         case 0xC9:
             //immediate #aa
+            nes->cpu->A -= pcra(nes, 1) + (nes->cpu->P && CARRY_FLAG ? 1 : 0);
+            acmb = nes->cpu->A; //accumulator backup
+            nes->cpu->pc += 2;
+            set_flags(nes);
+            nes->cpu->A = acmb; //accumulator restore
+            cycles = 2;
+            break;
         case 0xCD:
             //absolute #aaaa
+            nes->addr_bus = addr_es(nes);
+            acmb = nes->cpu->A; //accumulator backup
+            nes->cpu->A -= absolute_read(nes) + (nes->cpu->P && CARRY_FLAG ? 1 : 0);
+            nes->cpu->pc += 3;
+            set_flags(nes);
+            nes->cpu->A = acmb; //accumulator restore
+            cycles = 4;
+            break;
         case 0xD1:
             //indirect indexed (#aa), Y
+            nes->addr_bus = pcra(nes, 1); //ab=$aa
+            nes->addr_bus = rafm(nes, (uint16_t)zero_page_read(nes)) + nes->cpu->Y; //ab=*($aa)+Y
+            acmb = nes->cpu->A; //accumulator backup
+            nes->cpu->A -= absolute_read(nes) + (nes->cpu->P && CARRY_FLAG ? 1 : 0); //A |= *(*($aa) + Y)
+            nes->cpu->pc += 2;
+            set_flags(nes);
+            nes->cpu->A = acmb; //accumulator restore
+            cycles = ((nes->addr_bus & 0xFF) > nes->cpu->Y) ? 5 : 6; //boundry cross check
+            break;
         case 0xD5:
             //zero page indexed $aa, X
+            nes->addr_bus = (pcra(nes, 1) + nes->cpu->X);
+            nes->cpu->A -= zero_page_read(nes) + (nes->cpu->P && CARRY_FLAG ? 1 : 0);
+            acmb = nes->cpu->A; //accumulator backup
+            nes->cpu->pc += 2;
+            set_flags(nes);
+            nes->cpu->A = acmb; //accumulator restore
+            cycles = 4;
+            break;
         case 0xD9:
             //absolute indexed Y $aaaa, Y
+            nes->addr_bus = addr_es(nes) + nes->cpu->Y;
+            nes->cpu->A -= absolute_read(nes) + (nes->cpu->P && CARRY_FLAG ? 1 : 0);
+            acmb = nes->cpu->A; //accumulator backup
+            nes->cpu->pc += 3;
+            set_flags(nes);
+            nes->cpu->A = acmb; //accumulator restore
+            cycles = (nes->addr_bus & 0xFF) > nes->cpu->Y ? 4 : 5;
+            break;
         case 0xDD:
             //absolute indexed X $aaaa, X
+            nes->addr_bus = addr_es(nes) + nes->cpu->X;
+            acmb = nes->cpu->A; //accumulator backup
+            nes->cpu->A -= absolute_read(nes) + (nes->cpu->P && CARRY_FLAG ? 1 : 0);
+            nes->cpu->pc += 3;
+            set_flags(nes);
+            nes->cpu->A = acmb; //accumulator restore
+            cycles = (nes->addr_bus & 0xFF) > nes->cpu->X ? 4 : 5;
+            break;
 //SBC
         case 0xE1:
             //indexed indirect ($aa, X)
+            nes->addr_bus = pcra(nes, 1) + nes->cpu->X; //ab= X+$aa
+            nes->addr_bus = rafm(nes, (uint16_t)zero_page_read(nes)); //ab= *(X+$aa)
+            nes->cpu->A -= absolute_read(nes) + (nes->cpu->P && CARRY_FLAG ? 1 : 0);           //A += **(X+$aa)
+            nes->cpu->pc += 2;
+            set_flags(nes);
+            cycles = 6;
         case 0xE5:
             //zero page $aa
+            nes->addr_bus = pcra(nes, 1);
+            nes->cpu->A += zero_page_read(nes) + (nes->cpu->P && CARRY_FLAG ? 1 : 0);
+            nes->cpu->pc += 2;
+            set_flags(nes);
+            cycles = 3;
+            break;
         case 0xE9:
             //immediate #aa
+            nes->cpu->A -= pcra(nes, 1) + (nes->cpu->P && CARRY_FLAG ? 1 : 0);
+            nes->cpu->pc += 2;
+            set_flags(nes);
+            cycles = 2;
+            break;
         case 0xED:
             //absolute #aaaa
+            nes->addr_bus = addr_es(nes);
+            nes->cpu->A -= absolute_read(nes) + (nes->cpu->P && CARRY_FLAG ? 1 : 0);
+            nes->cpu->pc += 3;
+            set_flags(nes);
+            cycles = 4;
+            break;
         case 0xF1:
             //indirect indexed (#aa), Y
+            nes->addr_bus = pcra(nes, 1); //ab=$aa
+            nes->addr_bus = rafm(nes, (uint16_t)zero_page_read(nes)) + nes->cpu->Y; //ab=*($aa)+Y
+            nes->cpu->A -= absolute_read(nes) + (nes->cpu->P && CARRY_FLAG ? 1 : 0); //A |= *(*($aa) + Y)
+            nes->cpu->pc += 2;
+            set_flags(nes);
+            cycles = ((nes->addr_bus & 0xFF) > nes->cpu->Y) ? 5 : 6; //boundry cross check
+            break;
         case 0xF5:
             //zero page indexed $aa, X
+            nes->addr_bus = (pcra(nes, 1) + nes->cpu->X);
+            nes->cpu->A -= zero_page_read(nes) + (nes->cpu->P && CARRY_FLAG ? 1 : 0);
+            nes->cpu->pc += 2;
+            set_flags(nes);
+            cycles = 4;
+            break;
         case 0xF9:
             //absolute indexed Y $aaaa, Y
+            nes->addr_bus = addr_es(nes) + nes->cpu->Y;
+            nes->cpu->A -= absolute_read(nes) + (nes->cpu->P && CARRY_FLAG ? 1 : 0);
+            nes->cpu->pc += 3;
+            set_flags(nes);
+            cycles = (nes->addr_bus & 0xFF) > nes->cpu->Y ? 4 : 5;
+            break;
         case 0xFD:
             //absolute indexed X $aaaa, X
+            nes->addr_bus = addr_es(nes) + nes->cpu->X;
+            nes->cpu->A -= absolute_read(nes) + (nes->cpu->P && CARRY_FLAG ? 1 : 0);
+            nes->cpu->pc += 3;
+            set_flags(nes);
+            cycles = (nes->addr_bus & 0xFF) > nes->cpu->X ? 4 : 5;
+            break;
         default:
             return 0;
     }
